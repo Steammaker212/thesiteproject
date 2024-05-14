@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Shop - Your Website Title</title>
+    <link rel="stylesheet" href="The_Site.css">
+    <style>
+        /* Styles specific to the online shop */
+        #online-shop-description {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        #products {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+        .product {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease;
+            background-color: #fff;
+        }
+        .product:hover {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .product img {
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+        .product h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .product p {
+            text-align: center;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        .product button {
+            width: 100px;
+            padding: 8px 16px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .product .buy-now {
+            background-color: #ff4500;
+            color: #fff;
+            border: none;
+            margin-right: 5px;
+        }
+        .product .add-to-cart {
+            background-color: #008000;
+            color: #fff;
+            border: none;
+        }
+        .product button:hover {
+            background-color: #ccc;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <header>
+        <nav>
+            <div class="menu-icon" onclick="toggleMenu()">
+                <img src="menu.png" alt="Menu">
+            </div>
+            <ul>
+                <li><a href="The_site.html#repair-services">Repair Services</a></li>
+                <li><a href="The_site.html#online-shop">Online Shop</a></li>
+                <li><a href="The_site.html#3d-modeling-shop">3D Modeling Shop</a></li>
+                <li><a href="socials.html">Socials</a></li> <!-- New Socials tab -->
+            </ul>
+            <div class="login-icon" onclick="redirectToLogin()">
+                <img src="login.png" alt="Login">
+            </div>
+            <div class="cart-icon" onclick="redirectToCart()">
+                <img src="cart.png" alt="Cart">
+            </div>
+        </nav>
+    </header>
+
+    <!-- New Header Bar -->
+    <header class="new-header">
+        <nav>
+            <ul>
+                <li><a href="the_site.html">Back to The Site</a></li> <!-- Changed link to go back to the_site.html -->
+                <li><a href="repair-services.html">Repair Services</a></li>
+                <li><a href="3d-modeling-shop.html">3D Model Shop</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Menu -->
+    <nav class="menu">
+        <ul>
+            <li><a href="The_Site.html#repair-services">Repair Services</a></li>
+            <li><a href="The_Site.html#online-shop">Online Shop</a></li>
+            <li><a href="The_Site.html#3d-modeling-shop">3D Modeling Shop</a></li>
+            <li><a href="socials.html">Socials</a></li> <!-- New Socials tab -->
+        </ul>
+    </nav>
+
+    <!-- Main Content Section -->
+    <main>
+        <!-- Online Shop Description -->
+        <section id="online-shop-description">
+            <h2>Online Shop</h2>
+            <p>Explore our online shop for a wide range of products catering to gaming and technology enthusiasts. From affiliate products to repair tools and gaming supplies, we have something for everyone.</p>
+            <!-- Add any additional information about the online shop here -->
+        </section>
+
+        <!-- Product Layout -->
+        <section id="products">
+            <!-- Product cards will be dynamically added here -->
+        </section>
+    </main>
+
+    <!-- Footer Section -->
+    <footer>
+        <!-- Add your footer content here -->
+        <p>&copy; 2024 Your Website Name. All rights reserved.</p>
+        <div class="social-buttons">
+            <a href="#"><img src="Instagram_ico.png" alt="Instagram"></a>
+            <a href="#"><img src="Facebook-ico.jpg" alt="Facebook"></a>
+            <a href="#"><img src="youtube-ico.png" alt="YouTube"></a>
+            <a href="#"><img src="Discord-ico.png" alt="Discord"></a>
+            <a href="#"><img src="X-ico.png" alt="X"></a>
+            <a href="#"><img src="Gmail-ico.png" alt="Gmail"></a>
+            <a href="#"><img src="Telegram-ico.png" alt="Telegram"></a>
+        </div>
+    </footer>
+
+    <!-- JavaScript for Menu Toggle -->
+    <script src="The_Site.js"></script>
+    <script>
+        // JavaScript function to toggle menu visibility
+        function toggleMenu() {
+            var menu = document.querySelector('.menu');
+            if (menu.style.left === "-250px") {
+                menu.style.left = "0";
+            } else {
+                menu.style.left = "-250px";
+            }
+        }
+        function redirectToLogin() {
+            // Replace 'login.html' with your actual login page URL
+            window.location.href = 'login.html';}
+        function redirectToCart() {
+            // Replace 'addtocart.html' with the actual URL of your addtocart page
+            window.location.href = 'addtocart.html';
+        }
+        
+        // Fetch the product data from product.json
+        fetch('product.json')
+            .then(response => response.json())
+            .then(data => renderProducts(data))
+            .catch(error => console.error('Error fetching product data:', error));
+
+        // Function to render products
+        function renderProducts(products) {
+            const productsSection = document.getElementById('products');
+            products.forEach(product => {
+                const productDiv = document.createElement('div');
+                productDiv.classList.add('product');
+
+                const productImage = document.createElement('img');
+                productImage.src = product.image;
+                productImage.alt = product.name;
+
+                const productTitle = document.createElement('h3');
+                productTitle.textContent = product.name;
+
+                const productDescription = document.createElement('p');
+                productDescription.textContent = product.description;
+
+                const productPrice = document.createElement('p');
+                productPrice.textContent = 'Price: $' + product.price;
+
+                const quantityInput = document.createElement('input');
+                quantityInput.type = 'number';
+                quantityInput.min = 1;
+                quantityInput.value = 1;
+
+                const buyNowButton = document.createElement('button');
+                buyNowButton.textContent = 'Buy Now';
+                buyNowButton.classList.add('buy-now');
+                buyNowButton.addEventListener('click', () => {
+                    window.location.href = product.link;
+                });
+
+                const addToCartButton = document.createElement('button');
+                addToCartButton.textContent = 'Add to Cart';
+                addToCartButton.classList.add('add-to-cart');
+                addToCartButton.addEventListener('click', () => {
+                    addToCart(product, quantityInput.value);
+                });
+
+                productDiv.appendChild(productImage);
+                productDiv.appendChild(productTitle);
+                productDiv.appendChild(productDescription);
+                productDiv.appendChild(productPrice);
+                productDiv.appendChild(quantityInput);
+                productDiv.appendChild(buyNowButton);
+                productDiv.appendChild(addToCartButton);
+                productsSection.appendChild(productDiv);
+            });
+        }
+
+        // Function to add product to cart
+        function addToCart(product, quantity) {
+            // Retrieve cart items from sessionStorage
+            let cart = JSON.parse(sessionStorage.getItem('cart')) || [];
+
+            // Find product in cart
+            const existingItemIndex = cart.findIndex(item => item.name === product.name);
+
+            if (existingItemIndex !== -1) {
+                // Product already exists in cart, update quantity
+                cart[existingItemIndex].quantity += parseInt(quantity);
+            } else {
+                // Product does not exist in cart, add it
+                cart.push({ 
+                    name: product.name, 
+                    price: product.price, 
+                    quantity: parseInt(quantity),
+                    image: product.image // Include image path in the cart item
+                });
+            }
+
+            // Save updated cart to sessionStorage
+            sessionStorage.setItem('cart', JSON.stringify(cart));
+
+            // Notify user
+            alert('Product added to cart!');
+        }
+    </script>
+</body>
+</html>

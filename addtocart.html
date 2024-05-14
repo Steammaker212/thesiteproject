@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add to Cart</title>
+    <link rel="stylesheet" href="addtocart.css">
+    <style>
+        /* Additional CSS for layout */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 80%;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .cart-items {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .cart-item {
+            border-bottom: 1px solid #ccc;
+            padding: 10px 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+
+        .item-details {
+            display: flex;
+            align-items: center;
+            flex-grow: 1;
+        }
+
+        .item-name {
+            font-weight: bold;
+            color: #333;
+            margin-left: 10px;
+        }
+
+        .item-description {
+            color: #666;
+            margin-left: 10px;
+        }
+
+        .item-price {
+            color: #666;
+            margin-left: 10px;
+        }
+
+        .item-image {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .quantity-input {
+            width: 50px;
+            margin-left: 10px;
+            text-align: center;
+        }
+
+        .remove-button {
+            background-color: #ff0000;
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .remove-button:hover {
+            background-color: #cc0000;
+        }
+
+        .total-price {
+            font-weight: bold;
+            color: #333;
+            margin-top: 10px;
+        }
+
+        .back-button {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation Bar -->
+    <header>
+        <nav>
+            <ul>
+                <li><a href="The_Site.html">Home</a></li>
+                <li><a href="online-shop.html">Online Shop</a></li>
+                <li><a href="3d-modeling-shop.html">3D Modeling Shop</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h2>Shopping Cart</h2>
+        <ul class="cart-items" id="cart-items">
+            <!-- Cart items will be dynamically added here -->
+        </ul>
+        <p class="total-price" id="total-price"></p>
+        <a href="#" class="back-button">Back to Shopping</a>
+    </div>
+
+    <!-- JavaScript for Back Button and Cart Item Rendering -->
+    <script>
+        // JavaScript function to navigate back to the previous page
+        document.querySelector('.back-button').addEventListener('click', function (event) {
+            event.preventDefault();
+            window.history.back();
+        });
+
+        // Retrieve cart items from sessionStorage
+        let cartItems = [];
+
+        // Retrieve cart items from both storage keys
+        if (sessionStorage.getItem('cart')) {
+            cartItems = JSON.parse(sessionStorage.getItem('cart'));
+        }
+        if (localStorage.getItem('online_cart')) {
+            cartItems = cartItems.concat(JSON.parse(localStorage.getItem('online_cart')));
+        }
+        if (localStorage.getItem('3d_cart')) {
+            cartItems = cartItems.concat(JSON.parse(localStorage.getItem('3d_cart')));
+        }
+
+        // Reference to the cart items container
+        const cartItemsContainer = document.getElementById('cart-items');
+
+        // Function to render cart items
+        function renderCartItems() {
+            cartItemsContainer.innerHTML = ''; // Clear existing items
+            if (cartItems.length > 0) {
+                cartItems.forEach(item => {
+                    const cartItem = document.createElement('li');
+                    cartItem.classList.add('cart-item');
+
+                    const itemDetails = document.createElement('div');
+                    itemDetails.classList.add('item-details');
+
+                    const itemImage = document.createElement('img');
+                    itemImage.classList.add('item-image');
+                    itemImage.src = item.image;
+                    itemImage.alt = item.name;
+
+                    const itemName = document.createElement('span');
+                    itemName.classList.add('item-name');
+                    itemName.textContent = item.name;
+
+                    const itemDescription = document.createElement('span');
+                    itemDescription.classList.add('item-description');
+                    itemDescription.textContent = item.description;
+
+                    const itemPrice = document.createElement('span');
+                    itemPrice.classList.add('item-price');
+                    itemPrice.textContent = '$' + item.price;
+
+                    const quantityInput = document.createElement('input');
+                    quantityInput.classList.add('quantity-input');
+                    quantityInput.type = 'number';
+                    quantityInput.min = 1;
+                    quantityInput.value = item.quantity;
+                    quantityInput.addEventListener('change', () => {
+                        updateQuantity(item, quantityInput.value);
+                    });
+
+                    const removeButton = document.createElement('button');
+                    removeButton.classList.add('remove-button');
+                    removeButton.textContent = 'Remove';
+                    removeButton.addEventListener('click', () => {
+                        removeFromCart(item);
+                    });
+
+                    itemDetails.appendChild(itemImage);
+                    itemDetails.appendChild(itemName);
+                    itemDetails.appendChild(itemDescription);
+                    itemDetails.appendChild(itemPrice);
+                    itemDetails.appendChild(quantityInput);
+
+                    cartItem.appendChild(itemDetails);
+                    cartItem.appendChild(removeButton);
+                    cartItemsContainer.appendChild(cartItem);
+                });
+            } else {
+                const emptyCartMessage = document.createElement('li');
+                emptyCartMessage.textContent = 'Your cart is empty';
+                cartItemsContainer.appendChild(emptyCartMessage);
+            }
+
+            // Calculate and display total price
+            const totalPriceElement = document.getElementById('total-price');
+            const totalPrice = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+            totalPriceElement.textContent = 'Total: $' + totalPrice.toFixed(2);
+        }
+
+        // Function to remove item from cart
+        function removeFromCart(itemToRemove) {
+            cartItems = cartItems.filter(item => item.name !== itemToRemove.name);
+            // Update both storage keys
+            sessionStorage.setItem('cart', JSON.stringify(cartItems));
+            localStorage.setItem('online_cart', JSON.stringify(cartItems.filter(item => !item.storage))); // Remove products from 3d-modeling-shop.html
+            localStorage.setItem('3d_cart', JSON.stringify(cartItems.filter(item => item.storage))); // Remove products from online-shop.html
+            renderCartItems();
+        }
+
+        // Function to update quantity of item in cart
+        function updateQuantity(itemToUpdate, newQuantity) {
+            const index = cartItems.findIndex(item => item.name === itemToUpdate.name);
+            if (index !== -1) {
+                cartItems[index].quantity = parseInt(newQuantity);
+                // Update both storage keys
+                sessionStorage.setItem('cart', JSON.stringify(cartItems));
+                localStorage.setItem('online_cart', JSON.stringify(cartItems.filter(item => !item.storage))); // Remove products from 3d-modeling-shop.html
+                localStorage.setItem('3d_cart', JSON.stringify(cartItems.filter(item => item.storage))); // Remove products from online-shop.html
+                renderCartItems();
+            }
+        }
+
+        // Call the function to render cart items
+        renderCartItems();
+    </script>
+</body>
+
+</html>
